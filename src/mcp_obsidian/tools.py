@@ -10,6 +10,11 @@ import os
 from . import obsidian
 
 api_key = os.getenv("OBSIDIAN_API_KEY", "")
+protocol = os.getenv("OBSIDIAN_PROTOCOL", "https")
+host = os.getenv("OBSIDIAN_HOST", "127.0.0.1")
+port = int(os.getenv("OBSIDIAN_PORT", 27124))
+verify_ssl = os.getenv("OBSIDIAN_VERIFY_SSL", "False").lower() in ("true", "1", "t")
+
 if api_key == "":
     raise ValueError(f"OBSIDIAN_API_KEY environment variable required. Working directory: {os.getcwd()}")
 
@@ -43,7 +48,7 @@ class ListFilesInVaultToolHandler(ToolHandler):
 
     def run_tool(self, args: dict) -> Sequence[TextContent | ImageContent | EmbeddedResource]:
 
-        api = obsidian.Obsidian(api_key=api_key)
+        api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
 
         files = api.list_files_in_vault()
 
@@ -79,7 +84,7 @@ class ListFilesInDirToolHandler(ToolHandler):
         if "dirpath" not in args:
             raise RuntimeError("dirpath argument missing in arguments")
 
-        api = obsidian.Obsidian(api_key=api_key)
+        api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
 
         files = api.list_files_in_dir(args["dirpath"])
 
@@ -115,7 +120,7 @@ class GetFileContentsToolHandler(ToolHandler):
         if "filepath" not in args:
             raise RuntimeError("filepath argument missing in arguments")
 
-        api = obsidian.Obsidian(api_key=api_key)
+        api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
 
         content = api.get_file_contents(args["filepath"])
 
@@ -158,7 +163,7 @@ class SearchToolHandler(ToolHandler):
 
         context_length = args.get("context_length", 100)
         
-        api = obsidian.Obsidian(api_key=api_key)
+        api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
         results = api.search(args["query"], context_length)
         
         formatted_results = []
@@ -217,7 +222,7 @@ class AppendContentToolHandler(ToolHandler):
        if "filepath" not in args or "content" not in args:
            raise RuntimeError("filepath and content arguments required")
 
-       api = obsidian.Obsidian(api_key=api_key)
+       api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
        api.append_content(args.get("filepath", ""), args["content"])
 
        return [
@@ -271,7 +276,7 @@ class PatchContentToolHandler(ToolHandler):
        if not all(key in args for key in required):
            raise RuntimeError(f"Missing required arguments: {', '.join(required)}")
 
-       api = obsidian.Obsidian(api_key=api_key)
+       api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
        api.patch_content(
            args.get("filepath", ""),
            args.get("operation", ""),
@@ -315,7 +320,7 @@ class ComplexSearchToolHandler(ToolHandler):
        if "query" not in args:
            raise RuntimeError("query argument missing in arguments")
 
-       api = obsidian.Obsidian(api_key=api_key)
+       api = obsidian.Obsidian(api_key=api_key, protocol=protocol, host=host, port=port, verify_ssl=verify_ssl)
        results = api.search_json(args.get("query", ""))
 
        return [

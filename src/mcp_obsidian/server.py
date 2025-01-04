@@ -1,4 +1,3 @@
-
 import json
 import logging
 from collections.abc import Sequence
@@ -25,6 +24,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("mcp-obsidian")
 
 api_key = os.getenv("OBSIDIAN_API_KEY")
+protocol = os.getenv("OBSIDIAN_PROTOCOL", "https")
+host = os.getenv("OBSIDIAN_HOST", "127.0.0.1")
+port = int(os.getenv("OBSIDIAN_PORT", 27124))
+verify_ssl = os.getenv("OBSIDIAN_VERIFY_SSL", "False").lower() in ("true", "1", "t")
+
 if not api_key:
     raise ValueError(f"OBSIDIAN_API_KEY environment variable required. Working directory: {os.getcwd()}")
 

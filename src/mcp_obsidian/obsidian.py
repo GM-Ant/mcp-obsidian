@@ -1,15 +1,16 @@
 import requests
 import urllib.parse
+import os
 from typing import Any
 
 class Obsidian():
     def __init__(
             self, 
-            api_key: str,
-            protocol: str = 'https',
-            host: str = "127.0.0.1",
-            port: int = 27124,
-            verify_ssl: bool = False,
+            api_key: str = os.getenv('OBSIDIAN_API_KEY'),
+            protocol: str = os.getenv('OBSIDIAN_PROTOCOL', 'https'),
+            host: str = os.getenv('OBSIDIAN_HOST', "127.0.0.1"),
+            port: int = int(os.getenv('OBSIDIAN_PORT', 27124)),
+            verify_ssl: bool = os.getenv('OBSIDIAN_VERIFY_SSL', 'False').lower() in ('true', '1', 't'),
         ):
         self.api_key = api_key
         self.protocol = protocol
